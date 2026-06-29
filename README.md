@@ -2,6 +2,8 @@
 
 # Unified Prebiotic DNA Selection Framework (UPDSF) v3.1
 
+UPDSF v3.1 is a high-performance stochastic simulation engine designed to model the chemical evolution and selection of DNA over RNA in prebiotic environments
+
 ## Author: Seyed Mohammad Reza Hashemi (Reza Hashemi)
 
 Environment: 🐍 Python 3.8+
