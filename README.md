@@ -66,8 +66,8 @@ The framework generates 9-panel diagnostic plots showing:
 4. Kinetic Stability Profiles
 
 ## Citation 
-If you use this framework in your research, please cite it as: Hashemi, S. M. R. (2026). Unified Prebiotic DNA Selection Framework UPDSF_v3_1 
-https://doi.org/10.5281/zenodo.21026496
+If you use this framework in your research, please cite it as: 
+Reza Hashemi. (2026). mrhashemi2000/UPDSF_v3_1: Initial release. Zenodo. https://doi.org/10.5281/zenodo.21026496
 
 ## References
 
