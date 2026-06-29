@@ -20,6 +20,8 @@ https://doi.org/10.5281/zenodo.20771213
 
 https://doi.org/10.5281/zenodo.18594133
 
+https://doi.org/10.5281/zenodo.17964430
+
 ## Overview
 UPDSF v3.1 is a high-performance stochastic simulation engine designed to model the chemical evolution and selection of DNA over RNA in prebiotic environments. It specifically focuses on Wet-Dry Cycles within hydrothermal fields, incorporating mineral catalysis and pH-dependent hydrolysis rates.
 
