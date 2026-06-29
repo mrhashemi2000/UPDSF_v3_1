@@ -47,7 +47,12 @@ The core selection pressure in this model is derived from the 43:1 RNA/DNA hydro
 - Temperature: 25°C to 60°C
 - pH: 5.0 to 9.0
   
-This framework is the computational implementation of the Matter World Hypothesis (MWH) and the Chemical Darwinism series, as detailed in the published perspective: Intelligence-Augmented (IA) Chemical Darwinism under the Matter World Hypothesis: A Theoretical Framework for the Origin of Life https://doi.org/10.5281/zenodo.18594133 .
+This framework is the computational implementation of the Matter World Hypothesis (MWH) and the Chemical Darwinism series, as detailed in the published perspective: 
+
+Intelligence-Augmented (IA) Chemical Darwinism under the Matter World Hypothesis: A Theoretical Framework for the Origin of Life  https://doi.org/10.5281/zenodo.18594133 .
+
+Published November 19, 2025 | Version v2  Book  Open :
+The Matter World Hypothesis Chemical Darwinism Computational Simulation Origin of Life I-VII  https://doi.org/10.5281/zenodo.17964430
 
 ## Results Visualization
 The framework generates 9-panel diagnostic plots showing:
