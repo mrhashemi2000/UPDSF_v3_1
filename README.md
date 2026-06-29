@@ -1,3 +1,4 @@
+[![DOI](https://img.shields.io/badge/DOI-10.5281/zenodo.21026496-blue)](https://doi.org/10.5281/zenodo.21026496) [![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-nd/4.0/)
 
 # Unified Prebiotic DNA Selection Framework (UPDSF) v3.1
 
@@ -53,7 +54,8 @@ The framework generates 9-panel diagnostic plots showing:
 4. Kinetic Stability Profiles
 
 ## Citation 
-If you use this framework in your research, please cite it as: Hashemi, S. R. (2026). Unified Prebiotic DNA Selection Framework (UPDSF) v3.0 https://doi.org/10.5281/zenodo.20988680
+If you use this framework in your research, please cite it as: Hashemi, S. M. R. (2026). Unified Prebiotic DNA Selection Framework UPDSF_v3_1 
+https://doi.org/10.5281/zenodo.21026496
 
 ## References
 
