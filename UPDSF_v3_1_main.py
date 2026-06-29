@@ -6,7 +6,12 @@ WITH WET-DRY CYCLE DYNAMICS, MULTIPROCESSING, AND IMPROVED ACCURACY
 
 AUTHOR: Seyed Mohammad Reza Hashemi (Reza Hashemi) Intelligence-Augmented (IA)
 VERSION: 3.1 
-DOI: 10.5281/zenodo.20988680
+
+License & Copyright
+Copyright ©️ 2026 Seyed Mohammad Reza Hashemi  
+This work is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+
+DOI: 10.5281/zenodo.21026496
 """
 
 import numpy as np
