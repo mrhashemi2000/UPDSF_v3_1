@@ -46,6 +46,7 @@ python UPDSF_v3_1.py
 The core selection pressure in this model is derived from the 43:1 RNA/DNA hydrolysis ratio observed during extreme dehydration. The framework explores a 2D landscape of:
 - Temperature: 25°C to 60°C
 - pH: 5.0 to 9.0
+  
 This framework is the computational implementation of the Matter World Hypothesis (MWH) and the Chemical Darwinism series, as detailed in the published perspective: Intelligence-Augmented (IA) Chemical Darwinism under the Matter World Hypothesis: A Theoretical Framework for the Origin of Life https://doi.org/10.5281/zenodo.18594133 .
 
 ## Results Visualization
