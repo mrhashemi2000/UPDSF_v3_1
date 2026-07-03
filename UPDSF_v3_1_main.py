@@ -947,154 +947,128 @@ class TwoDSensitivityAnalyzer:
         print(f"    Enrichment: {opt['fast_enrichment']:.2f}x")
     
     def plot_sensitivity_2d(self, save_path: str = "sensitivity_wet_dry.png", show_fig: bool = True):
-        """Create comprehensive 2D sensitivity analysis plots"""
-        sns.set_style("whitegrid")
+        """نسخه نهایی با حداقل هم‌پوشانی"""
+        fig = plt.figure(figsize=(18, 14))
+        gs = GridSpec(3, 3, figure=fig, hspace=0.58, wspace=0.35)
         
-        fig = plt.figure(figsize=(20, 16))
-        gs = GridSpec(3, 3, figure=fig, hspace=0.35, wspace=0.3)
-        fig.suptitle('2D Sensitivity Analysis: Temperature × pH with Wet-Dry Cycles',
-                    fontsize=18, fontweight='bold', y=0.98)
-        
+        # داده‌ها
         T = self.surface_data['T']
         pH = self.surface_data['pH']
         enrichment = self.surface_data['enrichment']
         fraction = self.surface_data['fraction']
-        dna_yield = self.surface_data['dna_yield'] / 1000
+        dna_yield = self.surface_data['dna_yield']
         half_life = self.surface_data['half_life']
         transition = self.surface_data['transition_time']
-        
-        T_grid, pH_grid = np.meshgrid(T, pH, indexing='ij')
-        
-        # Plot 1: 3D Surface - Enrichment
-        ax1 = fig.add_subplot(gs[0, 0], projection='3d')
-        surf = ax1.plot_surface(T_grid, pH_grid, enrichment, cmap='viridis',
-                               alpha=0.8, edgecolor='none')
-        ax1.set_xlabel('Temperature (°C)', fontsize=10)
-        ax1.set_ylabel('pH', fontsize=10)
-        ax1.set_zlabel('Enrichment (x)', fontsize=10)
-        ax1.set_title('Thymine Enrichment Surface', fontsize=12, fontweight='bold')
-        fig.colorbar(surf, ax=ax1, shrink=0.5, aspect=10)
-        
-        T_opt = self.optimization_results['optimal_T']
-        pH_opt = self.optimization_results['optimal_pH']
-        max_ench = self.optimization_results['max_enrichment']
-        ax1.scatter([T_opt], [pH_opt], [max_ench], color='red', s=100, marker='*')
-        
-        # Plot 2: Contour - Enrichment
-        ax2 = fig.add_subplot(gs[0, 1])
-        contour = ax2.contourf(T, pH, enrichment.T, levels=20, cmap='viridis')
-        ax2.contour(T, pH, enrichment.T, levels=10, colors='black', alpha=0.3, linewidths=0.5)
-        ax2.scatter(T_opt, pH_opt, color='red', s=150, marker='*',
-                   label=f'Optimal: {T_opt:.1f}°C, pH={pH_opt:.2f}')
-        ax2.set_xlabel('Temperature (°C)', fontsize=11)
-        ax2.set_ylabel('pH', fontsize=11)
-        ax2.set_title('Enrichment Contours', fontsize=12, fontweight='bold')
-        ax2.legend(loc='upper right', fontsize=9)
-        fig.colorbar(contour, ax=ax2, shrink=0.8)
-        
-        # Plot 3: Heatmap - Enrichment
-        ax3 = fig.add_subplot(gs[0, 2])
-        im = ax3.imshow(enrichment, extent=[pH.min(), pH.max(), T.max(), T.min()],
-                       aspect='auto', cmap='RdYlGn', origin='upper')
-        ax3.scatter(pH_opt, T_opt, color='blue', s=150, marker='*',
-                   edgecolor='white', linewidth=2)
-        ax3.set_xlabel('pH', fontsize=11)
-        ax3.set_ylabel('Temperature (°C)', fontsize=11)
-        ax3.set_title('Enrichment Heatmap', fontsize=12, fontweight='bold')
-        fig.colorbar(im, ax=ax3, shrink=0.8, label='Enrichment (x)')
-        
-        # Plot 4: DNA Fraction
-        ax4 = fig.add_subplot(gs[1, 0])
-        contour4 = ax4.contourf(T, pH, fraction.T, levels=20, cmap='Blues')
-        ax4.scatter(T_opt, pH_opt, color='red', s=100, marker='*')
-        ax4.set_xlabel('Temperature (°C)', fontsize=11)
-        ax4.set_ylabel('pH', fontsize=11)
-        ax4.set_title('DNA Fraction', fontsize=12, fontweight='bold')
-        fig.colorbar(contour4, ax=ax4, shrink=0.8)
-        
-        # Plot 5: DNA Yield
-        ax5 = fig.add_subplot(gs[1, 1])
-        contour5 = ax5.contourf(T, pH, dna_yield.T, levels=20, cmap='Oranges')
-        ax5.scatter(T_opt, pH_opt, color='red', s=100, marker='*')
-        ax5.set_xlabel('Temperature (°C)', fontsize=11)
-        ax5.set_ylabel('pH', fontsize=11)
-        ax5.set_title('DNA Yield (thousands)', fontsize=12, fontweight='bold')
-        fig.colorbar(contour5, ax=ax5, shrink=0.8)
-        
-        # Plot 6: Transition Time
-        ax6 = fig.add_subplot(gs[1, 2])
-        contour6 = ax6.contourf(T, pH, transition.T, levels=20, cmap='Reds')
-        ax6.scatter(T_opt, pH_opt, color='blue', s=100, marker='*')
-        ax6.set_xlabel('Temperature (°C)', fontsize=11)
-        ax6.set_ylabel('pH', fontsize=11)
-        ax6.set_title('Transition Time (days)', fontsize=12, fontweight='bold')
-        fig.colorbar(contour6, ax=ax6, shrink=0.8)
-        
-        # Plot 7: DNA Half-life
-        ax7 = fig.add_subplot(gs[2, 0])
-        contour7 = ax7.contourf(T, pH, half_life.T, levels=20, cmap='Purples')
-        ax7.scatter(T_opt, pH_opt, color='red', s=100, marker='*')
-        ax7.set_xlabel('Temperature (°C)', fontsize=11)
-        ax7.set_ylabel('pH', fontsize=11)
-        ax7.set_title('DNA Half-life (hours)', fontsize=12, fontweight='bold')
-        fig.colorbar(contour7, ax=ax7, shrink=0.8)
-        
-        # Plot 8: Cycles to Transition
-        ax8 = fig.add_subplot(gs[2, 1])
-        cycles = self.surface_data['cycles_to_transition']
-        contour8 = ax8.contourf(T, pH, cycles.T, levels=20, cmap='coolwarm')
-        ax8.scatter(T_opt, pH_opt, color='red', s=100, marker='*')
-        ax8.set_xlabel('Temperature (°C)', fontsize=11)
-        ax8.set_ylabel('pH', fontsize=11)
-        ax8.set_title('Cycles to Transition', fontsize=12, fontweight='bold')
-        fig.colorbar(contour8, ax=ax8, shrink=0.8)
-        
-        # Plot 9: Summary Statistics
-        ax9 = fig.add_subplot(gs[2, 2])
-        ax9.axis('off')
+        cycles = self.surface_data.get('cycles_to_transition', np.zeros_like(enrichment))
         
         opt = self.optimization_results
+        T_opt = opt.get('optimal_T', 25.0)
+        pH_opt = opt.get('optimal_pH', 6.0)
+
+        # Plot 1: 3D Surface
+        ax1 = fig.add_subplot(gs[0, 0], projection='3d')
+        T_grid, pH_grid = np.meshgrid(T, pH)
+        surf = ax1.plot_surface(T_grid, pH_grid, enrichment.T, cmap='viridis', alpha=0.8)
+        ax1.scatter(T_opt, pH_opt, opt.get('max_enrichment', 3.0), color='red', s=150, marker='*')
+        ax1.set_xlabel('Temperature (°C)')
+        ax1.set_ylabel('pH')
+        ax1.set_zlabel('Enrichment (x)')
+        ax1.set_title('Thymine Enrichment Surface', fontsize=12, fontweight='bold')
+        fig.colorbar(surf, ax=ax1, shrink=0.6)
+
+        # Plot 2: Contours
+        ax2 = fig.add_subplot(gs[0, 1])
+        ax2.contourf(T, pH, enrichment.T, levels=25, cmap='viridis')
+        ax2.scatter(T_opt, pH_opt, color='red', s=120, marker='*')
+        ax2.set_xlabel('Temperature (°C)')
+        ax2.set_ylabel('pH')
+        ax2.set_title('Enrichment Contours', fontsize=12, fontweight='bold')
+
+        # Plot 3: Heatmap
+        ax3 = fig.add_subplot(gs[0, 2])
+        im = ax3.imshow(enrichment.T, extent=[T.min(), T.max(), pH.min(), pH.max()],
+                       aspect='auto', cmap='RdYlGn', origin='lower')
+        ax3.scatter(T_opt, pH_opt, color='blue', s=150, marker='*', edgecolor='white', linewidth=2)
+        ax3.set_xlabel('Temperature (°C)')
+        ax3.set_ylabel('pH')
+        ax3.set_title('Enrichment Heatmap', fontsize=12, fontweight='bold')
+        fig.colorbar(im, ax=ax3, shrink=0.8)
+
+        # Plot 4: DNA Fraction
+        ax4 = fig.add_subplot(gs[1, 0])
+        ax4.contourf(T, pH, fraction.T, levels=20, cmap='Blues')
+        ax4.scatter(T_opt, pH_opt, color='red', s=100, marker='*')
+        ax4.set_xlabel('Temperature (°C)')
+        ax4.set_ylabel('pH')
+        ax4.set_title('DNA Fraction', fontsize=12, fontweight='bold')
+        fig.colorbar(ax4.collections[0], ax=ax4, shrink=0.8)
+
+        # Plot 5: DNA Yield
+        ax5 = fig.add_subplot(gs[1, 1])
+        ax5.contourf(T, pH, dna_yield.T, levels=20, cmap='Oranges')
+        ax5.scatter(T_opt, pH_opt, color='red', s=100, marker='*')
+        ax5.set_xlabel('Temperature (°C)')
+        ax5.set_ylabel('pH')
+        ax5.set_title('DNA Yield (thousands)', fontsize=12, fontweight='bold')
+        fig.colorbar(ax5.collections[0], ax=ax5, shrink=0.8)
+
+        # Plot 6: Transition Time
+        ax6 = fig.add_subplot(gs[1, 2])
+        ax6.contourf(T, pH, transition.T, levels=20, cmap='Reds')
+        ax6.scatter(T_opt, pH_opt, color='blue', s=100, marker='*')
+        ax6.set_xlabel('Temperature (°C)')
+        ax6.set_ylabel('pH')
+        ax6.set_title('Transition Time (days)', fontsize=12, fontweight='bold')
+        fig.colorbar(ax6.collections[0], ax=ax6, shrink=0.8)
+
+        # Plot 7: DNA Half-life
+        ax7 = fig.add_subplot(gs[2, 0])
+        ax7.contourf(T, pH, half_life.T, levels=20, cmap='Purples')
+        ax7.scatter(T_opt, pH_opt, color='red', s=100, marker='*')
+        ax7.set_xlabel('Temperature (°C)')
+        ax7.set_ylabel('pH')
+        ax7.set_title('DNA Half-life (hours)', fontsize=12, fontweight='bold')
+        fig.colorbar(ax7.collections[0], ax=ax7, shrink=0.8)
+
+        # Plot 8: Cycles to Transition
+        ax8 = fig.add_subplot(gs[2, 1])
+        ax8.contourf(T, pH, cycles.T, levels=20, cmap='coolwarm')
+        ax8.scatter(T_opt, pH_opt, color='red', s=100, marker='*')
+        ax8.set_xlabel('Temperature (°C)')
+        ax8.set_ylabel('pH')
+        ax8.set_title('Cycles to Transition', fontsize=12, fontweight='bold')
+        fig.colorbar(ax8.collections[0], ax=ax8, shrink=0.8)
+
+        # Plot 9: Summary Box (اصلاح نهایی)
+        ax9 = fig.add_subplot(gs[2, 2])
+        ax9.axis('off')
         summary_text = f"""
-        ╔═══════════════════════════════════════════════════════╗
-        ║        2D OPTIMIZATION SUMMARY                       ║
-        ╠═══════════════════════════════════════════════════════╣
-        ║  Optimal Temperature:    {opt['optimal_T']:.1f}°C
-        ║  Optimal pH:             {opt['optimal_pH']:.2f}
-        ║  Maximum Enrichment:     {opt['max_enrichment']:.2f}x
-        ║                                                     ║
-        ║  At Optimal Conditions:                              ║
-        ║    DNA Fraction:         {opt['final_dna_fraction']:.3f}
-        ║    DNA Yield:            {opt['optimal_yield']/1000:.1f}K
-        ║    Half-life:            {opt['optimal_half_life']:.1f}h
-        ║    Transition:           {opt['transition_time']:.1f} days
-        ║    Cycles:               {opt['cycles_to_transition']:.1f}
-        ║                                                     ║
-        ║  Fastest Transition:                                 ║
-        ║    T:                   {opt['fast_T']:.1f}°C
-        ║    pH:                  {opt['fast_pH']:.2f}
-        ║    Cycles:              {opt['fast_transition']:.1f}
-        ║    Enrichment:          {opt['fast_enrichment']:.2f}x
-        ║                                                     ║
-        ║  Statistics:                                        ║
-        ║    Mean Enrichment:      {opt['mean_enrichment']:.2f}x
-        ║    Std Enrichment:       {opt['std_enrichment']:.2f}x
-        ║    Range:               {opt['enrichment_range'][0]:.2f}x -
-        ║                           {opt['enrichment_range'][1]:.2f}x
-        ╚═══════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗
+║        2D OPTIMIZATION SUMMARY              ║
+╠══════════════════════════════════════════════╣
+║ Optimal T:   {T_opt:.1f}°C     pH: {pH_opt:.2f}          ║
+║ Max Enrichment: {opt.get('max_enrichment', 0):.2f}x                 ║
+║ DNA Fraction:   {opt.get('final_dna_fraction', 0):.3f}    ║
+║ DNA Yield:      {opt.get('optimal_yield', 0)/1000:.1f}K   ║
+║ Half-life:      {opt.get('optimal_half_life', 0):.1f}h    ║
+║ Transition:     {opt.get('transition_time', 0):.1f} days  ║
+╚══════════════════════════════════════════════╝
         """
-        
-        ax9.text(0.5, 0.5, summary_text, ha='center', va='center',
-                transform=ax9.transAxes, fontsize=9, family='monospace',
-                bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.9))
-        
-        plt.tight_layout()
-        
+        ax9.text(0.5, 0.55, summary_text, ha='center', va='center',
+                 transform=ax9.transAxes, fontsize=8.5, family='monospace',
+                 bbox=dict(boxstyle='round,pad=0.5', facecolor='lightyellow', alpha=0.95))
+
+        # Layout نهایی - فاصله بیشتر از بالا
+        plt.subplots_adjust(left=0.05, right=0.95, bottom=0.12, top=0.88, hspace=0.58, wspace=0.35)
+        fig.suptitle('2D Sensitivity Analysis: Temperature × pH with Wet-Dry Cycles', 
+                     fontsize=16, fontweight='bold', y=0.96)
+
         if show_fig:
             plt.show()
-        
+
         if save_path:
-            plt.savefig(save_path, dpi=400, bbox_inches='tight')
-            print(f"\n✅ 2D Sensitivity plot saved: {save_path}")
+            plt.savefig(save_path, dpi=400, bbox_inches='tight', pad_inches=0.4)
+            print(f"✅ Plot saved: {save_path}")
         
         return fig
 
@@ -1332,7 +1306,7 @@ def run_wet_dry_analysis(quick_test: bool = True):
 
 
 def plot_wet_dry_results(vssuf: VSSUFEngine, save_path: str = "wet_dry_dynamics.png"):
-    """Plot detailed wet-dry cycle results"""
+    """Plot detailed wet-dry cycle results - نسخه نهایی با حداقل هم‌پوشانی"""
     
     fig, axes = plt.subplots(2, 3, figsize=(18, 10))
     fig.suptitle('Wet-Dry Cycle Dynamics: DNA vs RNA Selection',
@@ -1405,40 +1379,34 @@ def plot_wet_dry_results(vssuf: VSSUFEngine, save_path: str = "wet_dry_dynamics.
     ax.legend()
     ax.grid(True, alpha=0.3)
     
-    # Plot 6: Summary
+    # Plot 6: Summary - اصلاح هم‌پوشانی
     ax = axes[1, 2]
     ax.axis('off')
     
     cycle_results = vssuf.get_cycle_results()
-    
     summary = f"""
-    ╔═══════════════════════════════════════════════╗
-    ║      WET-DRY CYCLE SUMMARY                   ║
-    ╠═══════════════════════════════════════════════╣
-    ║  Total Cycles:        {cycle_results['total_cycles']}
-    ║  Cycle Period:        {vssuf.wd_engine.config.cycle_period_hours:.1f}h
-    ║  Dry Fraction:        {vssuf.wd_engine.config.dry_fraction:.1f}
-    ║  Mineral:             {vssuf.wd_engine.config.mineral_type}
-    ║                                              ║
-    ║  Final DNA Fraction:  {cycle_results['final_dna_fraction']:.3f}
-    ║  Final Enrichment:    {cycle_results['final_enrichment']:.2f}x
-    ║  Transition:          {cycle_results['transition_time_days']:.1f} days
-    ║  Transition Detected: {cycle_results['transition_detected']}
-    ║                                              ║
-    ║  Events:                                      ║
-    ║    Polymerization:    {cycle_results['polymerization_events']}
-    ║    Hydrolysis:        {cycle_results['hydrolysis_events']}
-    ╚═══════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗
+║      WET-DRY CYCLE SUMMARY                   ║
+╠══════════════════════════════════════════════╣
+║ Total Cycles:        {cycle_results['total_cycles']}
+║ Cycle Period:        {vssuf.wd_engine.config.cycle_period_hours:.1f}h
+║ Dry Fraction:        {vssuf.wd_engine.config.dry_fraction:.1f}
+║ Mineral:             {vssuf.wd_engine.config.mineral_type}
+║ Final DNA Fraction:  {cycle_results['final_dna_fraction']:.3f}
+║ Final Enrichment:    {cycle_results['final_enrichment']:.2f}x
+║ Transition:          {cycle_results['transition_time_days']:.1f} days
+║ Transition Detected: {cycle_results['transition_detected']}
+╚══════════════════════════════════════════════╝
     """
-    
-    ax.text(0.5, 0.5, summary, ha='center', va='center',
-           transform=ax.transAxes, fontsize=9, family='monospace',
-           bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.9))
-    
-    plt.tight_layout()
+    ax.text(0.5, 0.57, summary, ha='center', va='center',
+           transform=ax.transAxes, fontsize=8.5, family='monospace',
+           bbox=dict(boxstyle='round,pad=0.5', facecolor='lightyellow', alpha=0.95))
+
+    # تنظیم نهایی layout
+    plt.subplots_adjust(left=0.08, right=0.92, bottom=0.1, top=0.9, hspace=0.4, wspace=0.3)
     
     if save_path:
-        plt.savefig(save_path, dpi=300, bbox_inches='tight')
+        plt.savefig(save_path, dpi=300, bbox_inches='tight', pad_inches=0.3)
         print(f"✅ Wet-dry dynamics plot saved: {save_path}")
     
     plt.show()
